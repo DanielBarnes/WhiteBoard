@@ -6,7 +6,7 @@
 			var ctx = canvas.getContext("2d");
 			ctx.fillStyle = "black";
 			ctx.beginPath();
-			var socket = io.connect('http://192.168.100.111:8000');
+			var socket = io.connect('http://192.168.1.8:8000');
 			var x;
 			var y;
 			var derdipity;
@@ -19,35 +19,29 @@
 			});
 
 			canvas.onmousedown = function(e) {
-				x = e.clientX;
-				y = e.clientY;
-				derdipity = 1;
+				canvas.onmousemove = function(e) {
+					x = e.clientX;
+					y = e.clientY;
+					x -= canvas.offsetLeft;
+					y -= canvas.offsetTop;
+					var xyObj = {'x':x, 'y':y };
+					socket.send(JSON.stringify(xyObj));
+				};
 			}
-
+			
 			canvas.onmouseup = function(e) {
-				x = null;
-				derdipity = 0;
-				y = null;
-			}
-
-			canvas.onmousemove = function(e) {
-				if (x == null || y == null) {
-					return;
-				}
-				x = e.clientX;
-				y = e.clientY;
-				x -= canvas.offsetLeft;
-				y -= canvas.offsetTop;
-				if (derdipity === 1){
-					var s = {'x':x,'y':y};
-					socket.send(JSON.stringify(s));
-				}
+				canvas.onmousemove = null;
 			}
 		};
 	</script>
 </head>
 <body onload="draw();">
-	<canvas id="canvas" width="1200" height="800"
-	style="border: 1px solid black;"></canvas>
-	<button id="save-derdipity">Clear</button>
+	<div>
+	    <canvas id="canvas" width="1200" height="800"
+	    style="border: 1px solid black;"></canvas>
+
+	</div>
+	<div>
+		<button id="clearwhiteboard">Clear</button>
+    </div>
 </body>
