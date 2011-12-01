@@ -1,0 +1,51 @@
+<head>
+<script src="/socket.io/socket.io.js"></script>
+  <script>
+    function draw() {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      var socket = io.connect('http://192.168.100.111:8000');
+      var x;
+      var y;
+      var derdipity;
+
+       socket.on('message', function(msg){
+         var herp = JSON.parse(msg);
+         x = herp.x;
+	 y = herp.y;console.log(x + '  '+ y );
+    	 ctx.fillRect(x,y,5,5);
+       });
+
+      canvas.onmousedown = function(e) {
+       x = e.clientX;
+       y = e.clientY;
+       derdipity = 1;
+      }
+
+      canvas.onmouseup = function(e) {
+        x = null;
+	derdipity = 0;
+ 	y = null;
+      }
+
+      canvas.onmousemove = function(e) {
+        if (x == null || y == null) {
+          return;
+        }
+        x = e.clientX;
+        y = e.clientY;
+        x -= canvas.offsetLeft;
+        y -= canvas.offsetTop;
+        if (derdipity === 1){
+        var s = {'x':x,'y':y};
+        socket.send(JSON.stringify(s));}
+      }
+    };
+  </script>
+</head>
+<body onload="draw();">
+  <canvas id="canvas" width="900" height="900"
+  style="border: 1px solid black;"></canvas>
+</body>
