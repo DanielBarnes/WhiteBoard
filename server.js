@@ -39,7 +39,14 @@ io.sockets.on('connection', function (socket) {
 			socket.send(msg);
 		});
 	});
-	socket.on('clear', function(tmp){
-		socket.broadcast.emit('clear',1);
+	socket.on('clearScreen', function(tmp){
+		socket.broadcast.emit('clearScreen',tmp);
+		console.log('emited the clear');
+//		items = sortedfeed.getAll(function(err, reply) {
+//			Object.keys(reply).forEach(function(key) {
+//				sortedfeed.feedRetract(reply[key]);
+//				console.log(reply[key]);
+//			});
+//		});
 	});
 });

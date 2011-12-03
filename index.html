@@ -2,9 +2,9 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
 		function draw() {
-       		var canvas = document.getElementById('canvas');
-    	    var ctx = canvas.getContext('2d');
-	        var socket = io.connect('http://192.168.100.111:8000');
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+			var socket = io.connect('http://192.168.1.8:8000');
 			ctx.fillStyle = "black";
 			ctx.beginPath();
 			var x;
@@ -16,8 +16,9 @@
 				y = receivedData.y;console.log(x + '  '+ y );
 				ctx.fillRect(x,y,5,5);
 			});
-			socket.on('clear', function(tmp) {
-            	ctx.clearRect(0,0,canvas.width,canvas.height);        
+			socket.on('clearScreen', function(tmp) {
+				console.log('clearScreen');
+				ctx.clearRect(0,0,canvas.width,canvas.height);        
 			});
 			canvas.onmousedown = function(e) {
 				canvas.onmousemove = function(e) {
@@ -34,16 +35,16 @@
 			}
 		};
 
-        function clear() {
+		function clear() {
 			var socket = io.connect('http://192.168.100.111:8000');
 			var clrbtn = document.getElementById('clearbutton');
-            console.log('button button was loaded');
-          	var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext('2d');
+			console.log('button button was loaded');
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
 			clrbtn.onclick = function (){
 				console.log('button was clicked');
 				ctx.clearRect(0,0,canvas.width,canvas.height);
-				socket.emit('clear', 1); 
+				socket.emit('clearScreen', 1); 
 			};
 		};
 
@@ -51,11 +52,10 @@
 </head>
 <body onload="draw();clear();">
 	<div>
-	    <canvas id="canvas" width="1200" height="800"
-	    style="border: 1px solid black;"></canvas>
-
+		<canvas id="canvas" width="1200" height="800"
+		style="border: 1px solid black;"></canvas>
 	</div>
 	<div>
 		<button id='clearbutton'>Clear</button>
-    </div>
+	</div>
 </body>
