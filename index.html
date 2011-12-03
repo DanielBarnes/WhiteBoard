@@ -36,7 +36,7 @@
 		};
 
 		function clear() {
-			var socket = io.connect('http://192.168.100.111:8000');
+			var socket = io.connect('http://192.168.1.8:8000');
 			var clrbtn = document.getElementById('clearbutton');
 			console.log('button button was loaded');
 			var canvas = document.getElementById('canvas');
@@ -44,7 +44,7 @@
 			clrbtn.onclick = function (){
 				console.log('button was clicked');
 				ctx.clearRect(0,0,canvas.width,canvas.height);
-				socket.emit('clearScreen', 1); 
+				socket.emit('clearScreen',{derp: '1'}); 
 			};
 		};
 

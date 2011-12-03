@@ -40,13 +40,14 @@ io.sockets.on('connection', function (socket) {
 		});
 	});
 	socket.on('clearScreen', function(tmp){
-		socket.broadcast.emit('clearScreen',tmp);
+		socket.broadcast.emit('clearScreen',{derp: '1'});
 		console.log('emited the clear');
-//		items = sortedfeed.getAll(function(err, reply) {
-//			Object.keys(reply).forEach(function(key) {
-//				sortedfeed.feedRetract(reply[key]);
+		items = sortedfeed.getAll(function(err, reply) {
+			Object.keys(reply).forEach(function(key) {
+				sortedfeed.retract(reply[key].id, function(){
 //				console.log(reply[key]);
-//			});
-//		});
+				});
+			});
+		});
 	});
 });
