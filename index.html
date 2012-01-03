@@ -1,61 +1,25 @@
 <head>
 	<script src="/socket.io/socket.io.js"></script>
-	<script>
-		function draw() {
-			var canvas = document.getElementById('canvas');
-			var ctx = canvas.getContext('2d');
-			var socket = io.connect('http://192.168.1.8:8000');
-			ctx.fillStyle = "black";
-			ctx.beginPath();
-			var x;
-			var y;
-			socket.on('message', function(msg){
-				console.log(msg);
-				var receivedData = JSON.parse(msg);
-				x = receivedData.x;
-				y = receivedData.y;console.log(x + '  '+ y );
-				ctx.fillRect(x,y,5,5);
-			});
-			socket.on('clearScreen', function(tmp) {
-				console.log('clearScreen');
-				ctx.clearRect(0,0,canvas.width,canvas.height);        
-			});
-			canvas.onmousedown = function(e) {
-				canvas.onmousemove = function(e) {
-					x = e.clientX;
-					y = e.clientY;
-					x -= canvas.offsetLeft;
-					y -= canvas.offsetTop;
-					var xyObj = {'x':x, 'y':y };
-					socket.send(JSON.stringify(xyObj));
-				};
-			}
-			canvas.onmouseup = function(e) {
-				canvas.onmousemove = null;
-			}
-		};
-
-		function clear() {
-			var socket = io.connect('http://192.168.1.8:8000');
-			var clrbtn = document.getElementById('clearbutton');
-			console.log('button button was loaded');
-			var canvas = document.getElementById('canvas');
-			var ctx = canvas.getContext('2d');
-			clrbtn.onclick = function (){
-				console.log('button was clicked');
-				ctx.clearRect(0,0,canvas.width,canvas.height);
-				socket.emit('clearScreen',{derp: '1'}); 
-			};
-		};
-
-	</script>
 </head>
-<body onload="draw();clear();">
-	<div>
-		<canvas id="canvas" width="1200" height="800"
-		style="border: 1px solid black;"></canvas>
-	</div>
-	<div>
+<body>
+<style type="text/css">
+  #container { position: relative; }
+  #imageView { border: 1px solid #000; }
+  #imageTemp { position: absolute; top: 1px; left: 1px; }
+</style>
+    <div>
+        <canvas id="imageView" width="1200" height="800"
+        style="border: 1px solid black;"></canvas>
+    </div>
+    <div>
 		<button id='clearbutton'>Clear</button>
-	</div>
+		<select id='tools'>
+			<option value="line">Line</option>
+			<option value="pencil">Pencil</option>
+			<option value="rectangle">Rectangle</option>
+			<option value="text">Text Tool</option>
+		</select>
+    </div>
+	<script src="whiteboard.js"></script>
 </body>
+
