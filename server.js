@@ -9,6 +9,7 @@ var app = require('http').createServer(handler)
 var lineFeed = th.sortedFeed('linefeed');
 var pencilFeed = th.sortedFeed('pencilfeed');
 var rectangleFeed = th.sortedFeed('rectfeed');
+var textFeed = th.sortedFeed('textfeed');
 
 app.listen(8000);
 function handler(request, response){
@@ -57,7 +58,6 @@ io.sockets.on('connection', function(socket){
         if (reply.length > 0) {
             Object.keys(reply).forEach(function(key) {
                 socket.emit('linetool',reply[key].item);
-				console.log("DEBUG" + reply[key].item);
             });
         }
     });
@@ -75,9 +75,15 @@ io.sockets.on('connection', function(socket){
             });
         }
     });
+	items = textFeed.getAll(function(err, reply) {
+		if (reply.length > 0) {
+			Object.keys(reply).forEach(function(key) {
+				socket.emit('texttool',reply[key].item);
+			});
+		}
+	});
 	
 	socket.on('rectangletool', function(obj){
-		
         rectangleFeed.append(obj, obj, function(item , id){
             socket.broadcast.emit('rectangletool',obj);
         });
@@ -93,6 +99,12 @@ io.sockets.on('connection', function(socket){
         pencilFeed.append(obj, obj, function(item , id){
             socket.broadcast.emit('penciltool',obj);
         });
+	});
+
+	socket.on('texttool', function(obj){
+		textFeed.append(obj, obj, function(item , id){
+			socket.broadcast.emit('texttool',obj);
+		});
 	});
 
 	socket.on('clearscreen', function(obj){
@@ -115,5 +127,11 @@ io.sockets.on('connection', function(socket){
                 });
             });
         });
+		items = textFeed.getAll(function(err, reply) {
+			Object.keys(reply).forEach(function(key) {
+				textFeed.retract(reply[key].id, function(){
+				});
+			});
+		});
 	});
 });

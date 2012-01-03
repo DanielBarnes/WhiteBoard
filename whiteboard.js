@@ -36,6 +36,7 @@ function whiteboard(){
 	};
 
 	function lineTool(){
+		unreg_events();
 		var tempx;
 		var tempy;
 		var lineOBJ;
@@ -69,6 +70,7 @@ function whiteboard(){
 	};
 
 	function pencilTool(){
+		unreg_events();
 		var started;
 		var penOBJ;
 		var array = [];
@@ -103,6 +105,7 @@ function whiteboard(){
 	};
 
 	function rectangleTool(){
+		unreg_events()
 		var x,y,w,h;
 		var tempx;
 		var tempy;
@@ -141,24 +144,54 @@ function whiteboard(){
 	};
 
 	function textTool(){
-		alert('the text tool doesnt work, coming soon :)');
+		unreg_events();
 		var x,y;
-		var outputStr;
+		var outputStr = '';
 		var started;
-		started = false;
+		var textOBJ;
 		canvas.onmousedown = function(e){
+			$(document).unbind("keypress");
+			if(outputStr != ''){
+				textOBJ = {'string':outputStr, 'x':x, 'y':y};
+				socket.emit('texttool', JSON.stringify(textOBJ));
+			}
+			outputStr = '';
 			x = e.clientX;
 			y = e.clientY;
-			started = true;
-		};
-		if(started){
-			$().ready(function() {
-				$(document).keypress(function(e) {
-					outputStr += String.fromCharCode(e.which);
-					context.fillText(outputStr,x,y);
-					console.log(outputStr);
+			var temp = function(){
+				outputStr = '';
+				$().ready(function() {
+					$(document).keypress(function(e){
+						e.preventDefault();
+						if(e.which != 13){
+							if(e.which > 31 && e.which < 127)
+								outputStr += String.fromCharCode(e.which);
+							if(e.which == 8){
+								if(outputStr.length > 0)
+									outputStr = outputStr.substring(0,outputStr.length-1)
+									context.fillStyle = 'white';
+									context.fillRect(x,y,(outputStr.length*6),-6)
+									img_update()
+									context.fillStyle = 'black';
+									context.fillText(outputStr,x,y);
+									img_update();
+							}
+							context.fillStyle = 'white';
+							context.fillRect(x,y,(outputStr.length*6),-6)
+							img_update()
+							context.fillStyle = 'black';
+							context.fillText(outputStr,x,y);
+							img_update();
+						}else{
+							textOBJ = {'string':outputStr, 'x':x, 'y':y};
+							outputStr = '';
+							$(document).unbind("keypress");
+							socket.emit('texttool', JSON.stringify(textOBJ));
+						}
+					});
 				});
-			});
+			};
+			temp();
 		};
 	};
            
@@ -166,9 +199,16 @@ function whiteboard(){
 		contexto.drawImage(canvas, -8,-8);
 		context.clearRect(0,0,canvas.width,canvas.height);
 	};
-
-//	socket.on('message', function(obj){
-//	});
+	/*		TEXT TOOL		*/
+	socket.on('texttool', function(objt){
+		var obj = JSON.parse(objt);
+		context.fillStyle = 'white';
+		context.fillRect(obj.x,obj.y,((obj.string).length*6),-6)
+		img_update();
+		context.fillStyle = 'black';
+		context.fillText(obj.string, obj.x, obj.y);
+		img_update();
+	});
 	socket.on('clearscreen', function(obj){
 		contexto.clearRect(0,0,canvas.width,canvas.height);
 	});
@@ -209,6 +249,12 @@ function whiteboard(){
 	clearbutton.onclick = function(){
 		socket.emit('clearscreen',{'clear': 1});
 		contexto.clearRect(0,0,canvas.width,canvas.height);
+	}
+	/*		UNREGISTER EVENT HANDLERS		*/
+	function unreg_events(){
+		canvas.onmousedown = null;
+		canvas.onmousemove = null;
+		canvas.onmouseup = null;
 	}
 };
 
