@@ -11,43 +11,40 @@ var pencilFeed = th.sortedFeed('pencilfeed');
 var rectangleFeed = th.sortedFeed('rectfeed');
 
 app.listen(8000);
-
 function handler(request, response){
-    var uri = url.parse(request.url).pathname;
-    var filename = path.join(process.cwd(), uri);
-    console.log('tryed file: ' + filename);
-    path.exists(filename, function (exists){
-        if(!exists){
-            response.writeHeader(404, {'Content-Type': 'text/plain'});
-            response.end('Are you snooping around?');
-        }
-        fs.readFile(filename, 'binary', function(err, file){
-            if (err){
-                console.log(err)
-                response.writeHeader(500, {'Content-Type':'text/plain'});
-                response.end('You got and Error!!! Gasp what should you do?');
-                return;
-            }
-
-        response.writeHeader(200);
-        response.end(file);
-        });
-    });
+	console.log('request starting...');
+	var filePath = '.' + request.url;
+	if (filePath == './')
+		filePath = './index.html';
+	var extname = path.extname(filePath);
+	var contentType = 'text/html';
+	switch (extname){
+		case '.js':
+			contentType = 'text/javascript';
+			break;
+		case '.css':
+			contentType = 'text/css';
+			break;
+	}
+	path.exists(filePath, function(exists){
+		if (exists){
+			fs.readFile(filePath, function(error, content){
+				if (error){
+					response.writeHead(500);
+					response.end();
+				}
+				else{
+					response.writeHead(200, { 'Content-Type': contentType });
+					response.end(content, 'utf-8');
+				}
+			});
+		}
+		else{
+			response.writeHead(404);
+			response.end();
+		}
+	});
 };
-
-
-//function handler (req, res) {
-//	fs.readFile(__dirname + '/index2.html',
-//	function (err, data) {
-//		if (err) {
-//			res.writeHead(500);
-//			return res.end('Error loading index.html');
-//		}
-//		res.writeHead(200);
-//		res.end(data);
-//	});
-//}
-
 
 var connections = {};
 io.sockets.on('connection', function(socket){
@@ -80,9 +77,6 @@ io.sockets.on('connection', function(socket){
             });
         }
     });
-	
-
-
 	
 	socket.on('rectangletool', function(obj){
 		
@@ -125,36 +119,3 @@ io.sockets.on('connection', function(socket){
         });
 	});
 });
-
-
-//var conns = {};
-/*
-io.sockets.on('connection', function (socket) {
-	items = sortedfeed.getAll(function(err, reply) {
-		if (reply.length > 0) {
-			Object.keys(reply).forEach(function(key) {
- 				socket.send(reply[key].item);
-			});
-		}
-	});
-//	conns[socket.id] = socket;
-//	socket.on('disconnect', function(){
-//		delete conns[socket.id];
-//	});
-	socket.on('message', function(msg) {
-		sortedfeed.append(msg, msg, function(item , id){
-			socket.broadcast.emit('message',msg);
-			socket.send(msg);
-		});
-	});
-	socket.on('clearScreen', function(tmp){
-		socket.broadcast.emit('clearScreen',{derp: '1'});
-		console.log('emited the clear');
-		items = sortedfeed.getAll(function(err, reply) {
-			Object.keys(reply).forEach(function(key) {
-				sortedfeed.retract(reply[key].id, function(){
-				});
-			});
-		});
-	});
-});*/
