@@ -170,8 +170,7 @@ function whiteboard(){
 //	socket.on('message', function(obj){
 //	});
 	socket.on('clearscreen', function(obj){
-		context.clearRect(0,0,canvas.width,canvas.height);
-		img_update();
+		contexto.clearRect(0,0,canvas.width,canvas.height);
 	});
 	/*		RECTANGLE TOOL		*/
 	socket.on('rectangletool', function(objt){
@@ -208,8 +207,8 @@ function whiteboard(){
 	/*		CLEAR		*/
 	var clearbutton = document.getElementById('clearbutton');
 	clearbutton.onclick = function(){
-		context.clearRect(0,0,canvas.width,canvas.height);
 		socket.emit('clearscreen',{'clear': 1});
+		contexto.clearRect(0,0,canvas.width,canvas.height);
 	}
 };
 

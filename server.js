@@ -54,9 +54,7 @@ io.sockets.on('connection', function(socket){
 	});
 	/*		CHECK IF FEEDS ARE EMPTY		 */
     items = lineFeed.getAll(function(err, reply) {
-        console.log("DEBUG1");
         if (reply.length > 0) {
-			console.log("DEBUG2");
             Object.keys(reply).forEach(function(key) {
                 socket.emit('linetool',reply[key].item);
 				console.log("DEBUG" + reply[key].item);
