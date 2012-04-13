@@ -1,6 +1,6 @@
 var express = require('express'),
     routes = require('./routes'),
-//    stitch = require('stitch'),
+    stitch = require('stitch'),
     tm = require('./lib/server/thoonkManager'),
     User = require('./models/userModel').User,
     passport = require('passport'),
@@ -85,6 +85,13 @@ app.get('/whiteboard/:id', function(req,res){
     console.log("added room: " + req.params[0]);
     whiteServer.addRoom(req.params[0]);
 });
+//stitch route for whiteboard.js
+var package = stitch.createPackage({
+    paths: [__dirname + '/clientapp']
+});
+app.get('/app/whiteboard', package.createServer());
+
+//main routes!
 app.get('/', routes.index);
 app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/' }));
 app.get('/logout', ensureAuthenticated,routes.logout);

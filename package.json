@@ -13,6 +13,7 @@
       "passport": "",
       "passport-local": "",
       "connect-redis": "",
-      "node-uuid": ""
+      "node-uuid": "",
+      "stitch": "";
   }
 }
