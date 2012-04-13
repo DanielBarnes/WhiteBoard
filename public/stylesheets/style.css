@@ -1,0 +1,14 @@
+/*body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}*/
+#container { position: relative; }
+#canvasdiv { text-align: center; height: 720px; width: 100%; display: block;}
+canvas {margin: 10px auto; width: 1280; position: relative;}
+#imageView { border: 1px solid #000; z-index: 100}
+#imageTemp { top: -740px; z-index: 200 }
+
