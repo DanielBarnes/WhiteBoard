@@ -1,12 +1,18 @@
 {
-    "name": "application-name"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "express": ""
-    , "jade": "",
-      "socket.io": "",
+    "name": "application-name",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+      "express": "",
+      "jade": "",
       "thoonk": "",
-      "mixpanel": ""
+      "backbone": "",
+      "winston": "",
+      "underscore": "",
+      "async": "",
+      "passport": "",
+      "passport-local": "",
+      "connect-redis": "",
+      "node-uuid": ""
   }
 }
