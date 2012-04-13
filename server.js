@@ -89,7 +89,7 @@ app.get('/whiteboard/:id', function(req,res){
 var package = stitch.createPackage({
     paths: [__dirname + '/clientapp']
 });
-app.get('/app/whiteboard', package.createServer());
+app.get('/app/whiteboard.js', package.createServer());
 
 //main routes!
 app.get('/', routes.index);
