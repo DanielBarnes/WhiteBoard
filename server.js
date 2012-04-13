@@ -43,7 +43,7 @@ app.configure(function () {
     app.set('view engine', 'jade');
     app.use(express.bodyParser());
     app.use(express.cookieParser());
-    app.use(express.session({ secret: "adam is an asshead!", store: sessStore }));
+    app.use(express.session({ secret: "herp derp", store: sessStore }));
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(express.methodOverride());
@@ -78,11 +78,17 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/');
 }
 
+//SOCKETS!!!
+var whiteServer = require('./lib/server/whiteServer').start(app);
 // Rutes
+app.get('/whiteboard/:id', function(req,res){
+    console.log("added room: " + req.params[0]);
+    whiteServer.addRoom(req.params[0]);
+});
 app.get('/', routes.index);
 app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/' }));
 app.get('/logout', ensureAuthenticated,routes.logout);
-app.get(/\/requests\/(.*)/, ensureAuthenticated, routes.requests);
+//app.get(/\/requests\/(.*)/, ensureAuthenticated, routes.requests);
 
 app.listen(4000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
