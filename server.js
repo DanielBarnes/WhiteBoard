@@ -37,15 +37,13 @@ passport.deserializeUser(function (id, done) {
 });
 
 // Configuration
-var sessStore = new RedisStore();
 app.configure(function () {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.bodyParser());
-    app.use(express.cookieParser());
-//    app.use(express.session({ secret: "herp derp", store: sessStore }));
-    app.use(passport.initialize());
-    app.use(passport.session());
+//    app.use(express.cookieParser());
+//    app.use(express.session({ secret: "secret", store: new RedisStore }));
+//    app.use(passport.initialize());
     app.use(express.methodOverride());
     app.use(express.static(__dirname + '/public'));
     app.use(app.router);
@@ -80,11 +78,13 @@ function ensureAuthenticated(req, res, next) {
 }
 
 //SOCKETS!!!
-var whiteServer = require('./lib/server/whiteServer').emit('start', app);
+var util = require('util');
+var whiteServer = require('./lib/server/whiteServer');
+whiteServer.emit('go', app);
 // Rutes
 app.get('/whiteboard/:id', function(req,res){
-    console.log("added room: " + req.params[0]);
-    whiteServer.emit('addRoom' ,req.params[0]);
+    console.log("added room: " + req.params.id);
+    whiteServer.emit('room' ,req.params.id);
 });
 //stitch route for whiteboard.js
 var package = stitch.createPackage({
@@ -94,8 +94,8 @@ app.get('/app/whiteboard.js', package.createServer());
 
 //main routes!
 app.get('/', routes.index);
-app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/' }));
-app.get('/logout', ensureAuthenticated,routes.logout);
+//app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/' }));
+//app.get('/logout', ensureAuthenticated,routes.logout);
 //app.get(/\/requests\/(.*)/, ensureAuthenticated, routes.requests);
 
 app.listen(3000);
