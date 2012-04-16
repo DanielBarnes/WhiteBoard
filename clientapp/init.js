@@ -1,9 +1,9 @@
 var socket = io.connect(document.URL);
 console.log('socket connected to ' + document.URL);
 
-var clientBoard = require('./clientBoard'),
-    roomBoard = require('./roomBoard'),
-    mainBoard = require('./mainBoard'),
+var clientBoard = require('./clientBoard').init(socket),
+    roomBoard = require('./roomBoard').init(),
+    mainBoard = require('./mainBoard').init(),
     EventEmitter = require('./EventEmitter');
 
 socket.on('data',function(data){
