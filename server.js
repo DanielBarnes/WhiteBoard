@@ -85,6 +85,7 @@ whiteServer.emit('go', app);
 app.get('/whiteboard/:id', function(req,res){
     console.log("added room: " + req.params.id);
     whiteServer.emit('room' ,req.params.id);
+    res.render('whiteboard.jade', {layout: true, title: 'derp'});
 });
 //stitch route for whiteboard.js
 var package = stitch.createPackage({

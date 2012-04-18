@@ -1,16 +1,14 @@
 label#conCount Peeps Drawing: 
 div#canvasdiv(width="1280", height="720")
-	canvas#clientCanvas(width="1280", height="720", style="border: 1px solid black;")
-    canvas#roomCanvas(width="1280", height="720", style="border: 1px solid black;")
-    canvas#mainCanvas(width="1280", height="720", style="border: 1px solid black;")
-
+  canvas#clientCanvas(width="1280", height="720", style="border: 1px solid black;")
+  canvas#mainCanvas(width="1280", height="720", style="border: 1px solid black;")
 div#toolsdivone
-	button#clearbutton Clear
-	select#tools
-		option(value="line") Line
-		option(value="pencil") Pencil
-		option(value="rectangle") Rectangle
-		option(value="text") TextTool
-	input#textbox(type="text")
-	canvas#myCanvas(width="578", height="276")
+  button#clearbutton Clear
+    select#tools
+      option(value="line") Line
+      option(value="pencil") Pencil
+      option(value="rectangle") Rectangle
+      option(value="text") TextTool
+  input#textbox(type="text")
+  canvas#myCanvas(width="578", height="276")
 script(src="/app/whiteboard.js")
