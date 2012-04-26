@@ -6,9 +6,30 @@
 a {
   color: #00B7FF;
 }*/
-#container { position: relative; }
-#canvasdiv { text-align: center; height: 720px; width: 100%; display: block;}
-canvas {margin: 10px auto; width: 1280; position: relative;}
-#mainCanvas { border: 1px solid #000; z-index: 100}
-#clientCanvas { z-index: 200 }
+#canvasdiv {
+    position: relative;
+    text-align: center;
+    height: 720px;
+    width: 100%
+}
+/*
+canvas {
+    position : relative;
+    top: 0;
+}
+*/
+#mainCanvas {
+    left: 50%;
+    margin-left: -640px;
+    position: absolute;
+    top: 0px;
+    z-index: 100;
+}
+#clientCanvas {
+    left: 50%;
+    margin-left: -640px;
+    position: absolute;
+    top: 0px;
+    z-index: 200;
+}
 
