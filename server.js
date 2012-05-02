@@ -87,11 +87,9 @@ app.get('/whiteboard/:id', function(req,res){
     whiteServer.emit('room' ,req.params.id);
     res.render('whiteboard.jade', {layout: false, title: 'derp'});
 });
-//stitch route for whiteboard.js
-var package = stitch.createPackage({
-    paths: [__dirname + '/clientapp']
-});
-app.get('/app/whiteboard.js', package.createServer());
+
+var bundle = require('browserify')(__dirname + "/clientapp/whiteboard.js");
+app.use(bundle);
 
 //main routes!
 app.get('/', routes.index);

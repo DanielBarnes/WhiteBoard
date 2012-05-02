@@ -1,6 +1,6 @@
 module.exports.init = function(){
-    var ColorSelector = require('./ColorSelector');
-    var mainBoard = require('./mainBoard').init();
+    var ColorSelector = require('./colorselector');
+    var mainBoard = require('./mainboard').init();
     /**
     *   Canvas Setup
     **/

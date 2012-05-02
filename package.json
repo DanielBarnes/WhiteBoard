@@ -17,6 +17,7 @@
       "stitch": "",
       "bcrypt": "",
       "socket.io": "",
-      "redis": ""
+      "redis": "",
+      "browserify": ""
   }
 }
