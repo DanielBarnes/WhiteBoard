@@ -29,6 +29,7 @@ socket.on('data', function(data){
 
 // Main Board
 mainBoard.on('start',function(){
+    console.log('mainboard started');
     var canvas = getElementById('mainCanvas');
     var context = canvas.getContext('2d');
 
@@ -48,21 +49,25 @@ mainBoard.on('start',function(){
 
 //Client Board
 clientBoard.on('start', function(){
+    console.log('clientboard started');
     //canvas setup
     var canvas = document.getElementById('clientCanvas');
     var context = canvas.getContext('2d');
     context.fillStyle = 'black';
 
     //toolSelector
+    $('#textbox').hide();
     var toolSelect = document.getElementById('tools');
     toolSelect.onchange = function(e){
         $('#textbox').hide();
+        console.log('the tool got changed');
     }
 
     //Clear Button
     var clearButton = document.getElementById('clearbutton');
     clearButton.onclick = function(){
         socket.emit('clear', {type: 'clear'});
+        console.log('clear button got pushed');
     }
 
     //canvas var/reqs
@@ -73,6 +78,7 @@ clientBoard.on('start', function(){
 
     //canvas Events
     canvas.onmousedown = function(e){
+        console.log('mouse down');
         ismousedown = true;
         context.fillStyle = ColorSelect.color;
         context.strokeStyle = ColorSelect.color;
@@ -144,6 +150,7 @@ clientBoard.on('start', function(){
         }
     }
     canvas.onmouseup = function(e){
+        console.log('mouse up');
         ismousedown = false;
         context.fillStyle = ColorSelect.color;
         context.strokeStyle = ColorSelect.color;
