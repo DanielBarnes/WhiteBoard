@@ -1,6 +1,6 @@
 function whiteboard(){
     /*		Make connect back to server and send id		*/
-    var socket = io.connect('http://thebarnacle.info:3000');
+    var socket = io.connect('http://thebarnacle.info');
     var roomNumber = $("title").text();
     socket.send(roomNumber);
     console.log(roomNumber);

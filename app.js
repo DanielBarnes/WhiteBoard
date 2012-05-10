@@ -1,7 +1,7 @@
 var express = require('express'),
     routes = require('./routes')
 var app = module.exports = express.createServer();
-var io = require('socket.io').listen(app);
+var io = require('socket.io').listen(app, { log: false });
 var th = require('thoonk').createClient('localhost');
 var mixpanel = require('mixpanel');
 var metrics = new mixpanel.Client('688a52850aa9652bd7fb452839fb580b');
@@ -31,48 +31,54 @@ var feeds = {}
 app.get('/', function(req,res){
     var roomNumber;
     roomNumber = Date.now();
-    res.redirect('/' + roomNumber);
+    res.redirect('/whiteboard/' + roomNumber);
     metrics.track('Homepage',{},function(err){
         if(err) throw err;
     });
 });
-app.get('/:id', function(req,res){
+app.get('/whiteboard/:id', function(req,res){
 //    if (typeof(rooms[req.params.id]) === 'undefined'){
         feeds[req.params.id] = th.sortedFeed(req.params.id.toString());
-        rooms[req.params.id] = [];
+        if(rooms[req.params.id] == undefined){
+            rooms[req.params.id] = [];
+            console.log('room:' + req.params.id + ' created');
+        } else {
+            console.log('else...')
+        }
         res.render('index', { id: req.params.id });
 //    }else{
 //        res.render('index', { id: req.params.id });
 //    }
 });
-app.listen(3000);
+app.listen(80);
 /*		Server interaction with client		*/
 var connections = {};
 var clients = {};
 var conCount = {};
+var util = require('util');
 io.sockets.on('connection', function(socket){
-    connections[socket.id] = socket;
     socket.on('message', function(roomNumber){
         /*		Save Connection		*/
+        connections[socket.id] = socket;
         rooms[roomNumber].push(socket.id);	//array of socket ids in room
-        console.log(roomNumber);
-        console.log(rooms[roomNumber]);
         clients[socket.id] = roomNumber;	//ids to room numbers
         if(conCount[roomNumber] == null){
             conCount[roomNumber] = 0;
         }
         conCount[roomNumber] += 1;
-        updateConnectionCount(clients[socket.id]);
+//        updateConnectionCount(clients[socket.id]);
         /*		Handle disconnects		*/
         socket.on('disconnect', function(){
             conCount[roomNumber] -= 1;
             updateConnectionCount(clients[socket.id]);
-            rooms[roomNumber].splice(rooms[roomNumber].indexOf(socket.id), 1);
             delete clients[socket.id];
             delete connections[socket.id];
         });
         /*		Server receives data from client		*/
         socket.on('data', function(data){
+            console.log('Socket.id: ' + socket.id);
+            console.log('Rooms active: ' + util.inspect(rooms));
+            console.log('client in room --> ' + clients[socket.id]);
             emit_all(socket.id, 'data', data);
             var met = JSON.parse(data);
             metrics.track(met.type, {'socketID': socket.id, 'RoomNumber': roomNumber}, function(err){
@@ -150,9 +156,7 @@ mixpanel.request('events/properties', req, function(err, res) {
 */
 function updateConnectionCount(roomId){
     for(var i = 0, length = rooms[roomId].length; i < length; i++){ 
-        console.log(rooms[roomId]);
         connections[rooms[roomId][i]].emit('connectCount', conCount[roomId]);
-        console.log('sent to: ' + connections[rooms[roomId]]);
     }
 //    rooms[roomNumber].forEach(function(clientID){
 //        connections[clientID].emit('connectCount', conCount[roomNumber]);
