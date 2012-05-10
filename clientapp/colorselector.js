@@ -1,4 +1,5 @@
 module.exports = function(){    
+    console.log('yay colors omg!')
     var color;
     function getMousePos(canvas, evt){
     // get canvas position

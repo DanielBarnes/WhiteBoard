@@ -4,10 +4,15 @@ var EventEmitter = require('events').EventEmitter
 var clientBoard = new EventEmitter;
 var mainBoard = new EventEmitter;
 
-clientBoard.emit('start');
-mainBoard.emit('start');
-
-var ColorSelect = require('./colorselector');
+clientBoard.emit('start',{
+    toolSelect: document.getElementById('tools'),
+    canvas: document.getElementById('clientCanvas')
+    });
+mainBoard.emit('start',{
+    canvas: document.getElementById('maincanvas')
+    });
+console.log('emitted start to the boards');
+//var ColorSelect = require('./colorselector');
 
 var socket = io.connect(document.URL);
 console.log('socket connected to ' + document.URL);
@@ -28,9 +33,9 @@ socket.on('data', function(data){
 
 
 // Main Board
-mainBoard.on('start',function(){
+mainBoard.on('start',function(opt){
     console.log('mainboard started');
-    var canvas = getElementById('mainCanvas');
+    var canvas = opt.canvas// getElementById('mainCanvas');
     var context = canvas.getContext('2d');
 
     mainBoard.on('update', function(dict){
@@ -48,16 +53,17 @@ mainBoard.on('start',function(){
 });
 
 //Client Board
-clientBoard.on('start', function(){
+clientBoard.on('start', function(opt){
     console.log('clientboard started');
     //canvas setup
-    var canvas = document.getElementById('clientCanvas');
+    var canvas = opt.canvas//document.getElementById('clientCanvas');
     var context = canvas.getContext('2d');
     context.fillStyle = 'black';
-
+    
+    console.log('canvas : ' + canvas);
     //toolSelector
     $('#textbox').hide();
-    var toolSelect = document.getElementById('tools');
+    var toolSelect = opt.toolSelect//document.getElementById('tools');
     toolSelect.onchange = function(e){
         $('#textbox').hide();
         console.log('the tool got changed');
